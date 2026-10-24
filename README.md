@@ -1,6 +1,6 @@
-# PureStep
+# Redex
 
-PureStep is a visual interpreter for a deliberately small Haskell-like functional language. It shows intermediate reductions, the progress of `map`, and the accumulator updates of `foldl`.
+Redex is a visual interpreter for a deliberately small Haskell-like functional language. It shows intermediate reductions, the progress of `map`, and the accumulator updates of `foldl`.
 
 ## Run locally
 
