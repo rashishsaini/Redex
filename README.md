@@ -43,7 +43,7 @@ let xs = [1, 2, 3] in foldl (\acc x -> acc + x) 0 (map (\x -> x * 2) xs)
 
 The interpreter implements a small-step, left-to-right, call-by-value evaluation strategy. Every Next Step performs at most one reduction: a variable substitution, arithmetic operation, function application, or an internal `map`/`foldl` transition. Previous Step replays the stored previous snapshot; Reset returns to the initial state. A 5,000-step limit guards against non-terminating programs.
 
-This is an educational subset, not a full Haskell implementation. It does not currently implement division, booleans, conditionals, pattern matching, recursive `let`, or all Haskell syntax.
+This is an educational subset, not a full Haskell implementation. It does not currently implement division, booleans, conditionals, pattern matching, recursive `let`, algebraic data types or all Haskell syntax.
 
 ## Architecture
 

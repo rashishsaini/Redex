@@ -19,7 +19,7 @@ export function Header({ status, autoRunning }: HeaderProps) {
         <span className="logo" aria-hidden="true">
           λ
         </span>
-        <h1>PureStep</h1>
+        <h1>Redex</h1>
         <p>A visual functional programming interpreter</p>
       </div>
 

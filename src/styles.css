@@ -1,30 +1,60 @@
 /* ==========================================================================
-   PureStep — dark educational IDE
+   PureStep — red & pastel-red educational IDE
    Plain CSS. Tokens first, then layout, then components.
+
+   Colour model
+   - Page, header and control bar are deep red (crimson / wine).
+   - Panels, editor and input/output boxes are pastel red (peach / salmon).
+   - Text on pastel is deep maroon; text on deep red is cream.
+   - Blue (keywords) and green (numbers, computed output) stay as the only
+     non-red hues, so syntax colours and "success" still read at a glance.
+   - Errors invert the scheme (near-black wine / near-white block) so they
+     never blend into the red page.
    ========================================================================== */
 
 :root {
-  --bg: #0a0d13;
-  --bg-elev: #10141c;
-  --bg-inset: #0c1017;
-  --border: #1d2430;
-  --border-strong: #2a3342;
+  /* ---- palette -------------------------------------------------------- */
+  --crimson: #ff746c; /* page */
+  --wine: #7c1317; /* header + control bar */
+  --wine-deep: #3d0709; /* error pill */
+  --peach: #fde3d8; /* panel surface */
+  --salmon: #f9c4b4; /* panel head */
+  --salmon-deep: #f6ae9c; /* panel foot */
+  --blush: #fbd3c5; /* editor / inset surface */
+  --cream: #fef0ea; /* input + output boxes */
+  --cream-hot: #fbc7b9; /* output box that is about to be filled */
 
-  --text: #d8dee9;
-  --text-dim: #8a96a8;
-  --text-faint: #5a6577;
+  /* ---- semantic tokens (names kept from the dark theme) ----------------- */
+  --bg: var(--crimson);
+  --bg-elev: var(--peach);
+  --bg-inset: var(--blush);
+  --border: #efb2a2;
+  --border-strong: #d9857c;
 
-  /* active element + primary action */
-  --accent: #f3b34c;
-  --accent-soft: rgba(243, 179, 76, 0.13);
-  --accent-ink: #1a1305;
-  /* computed output / success */
-  --ok: #5ad1a8;
-  --ok-soft: rgba(90, 209, 168, 0.11);
+  /* text on pastel surfaces */
+  --text: #3d1115;
+  --text-dim: #7a3338;
+  --text-faint: #8a4747;
+
+  /* active element + emphasis on pastel */
+  --accent: #c1272d;
+  --accent-strong: #8f1519;
+  --accent-soft: rgba(193, 39, 45, 0.12);
+  --accent-ink: #4a0a0e; /* text on pastel-salmon buttons */
+  /* computed output / success (dark enough to read on pastel) */
+  --ok: #136b4d;
+  --ok-soft: rgba(19, 107, 77, 0.11);
   /* informational */
-  --info: #6cb6ff;
-  --err: #ff6b6b;
-  --err-soft: rgba(255, 107, 107, 0.09);
+  --info: #1d62ad;
+  --err: #8f0f15;
+  --err-soft: #fff6f2;
+
+  /* ---- on deep red (header, control bar) -------------------------------- */
+  --on-dark: #ffeae2;
+  --on-dark-dim: #f5b9ab;
+  --on-dark-line: rgba(255, 196, 180, 0.22);
+  --action: #ffb8a6; /* pastel action colour on deep red */
+  --action-hover: #ffcdbf;
 
   --mono: ui-monospace, "JetBrains Mono", "Fira Code", "SF Mono", Menlo, Consolas,
     "Liberation Mono", monospace;
@@ -34,8 +64,9 @@
   --radius: 10px;
   --box: clamp(52px, 11vh, 104px);
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --lift: 0 14px 30px -18px rgba(40, 0, 4, 0.65);
 
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 *,
@@ -53,15 +84,15 @@ body,
 body {
   margin: 0;
   background:
-    radial-gradient(1100px 520px at 18% -12%, rgba(108, 182, 255, 0.06), transparent 60%)
+    radial-gradient(1100px 520px at 18% -12%, rgba(255, 150, 130, 0.22), transparent 60%)
       no-repeat,
     var(--bg);
-  color: var(--text);
+  color: var(--on-dark);
   font-family: var(--sans);
   font-size: 14px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
-  scrollbar-color: var(--border-strong) transparent;
+  scrollbar-color: #d98d82 transparent;
 }
 
 h1,
@@ -77,7 +108,11 @@ textarea {
 }
 
 ::selection {
-  background: rgba(243, 179, 76, 0.3);
+  background: rgba(255, 196, 180, 0.45);
+}
+.panel ::selection,
+.stage ::selection {
+  background: rgba(193, 39, 45, 0.28);
 }
 
 .sr-only {
@@ -151,8 +186,8 @@ textarea {
   justify-content: space-between;
   gap: 16px;
   padding: 10px 24px;
-  border-bottom: 1px solid var(--border);
-  background: rgba(10, 13, 19, 0.8);
+  border-bottom: 1px solid var(--on-dark-line);
+  background: rgba(124, 19, 23, 0.88);
   backdrop-filter: blur(6px);
 }
 
@@ -168,11 +203,12 @@ textarea {
   font-size: 16px;
   font-weight: 650;
   letter-spacing: 0.01em;
+  color: var(--on-dark);
 }
 
 .brand p {
   font-size: 12.5px;
-  color: var(--text-dim);
+  color: var(--on-dark-dim);
 }
 
 .brand p::before {
@@ -182,7 +218,7 @@ textarea {
   height: 12px;
   margin-right: 12px;
   vertical-align: -1px;
-  background: var(--border-strong);
+  background: rgba(255, 196, 180, 0.35);
 }
 
 .logo {
@@ -191,9 +227,9 @@ textarea {
   width: 30px;
   height: 30px;
   border-radius: 8px;
-  border: 1px solid var(--border-strong);
-  background: linear-gradient(145deg, #1b2230, #121722);
-  color: var(--accent);
+  border: 1px solid #ffd3c7;
+  background: linear-gradient(145deg, #ffd9cd, #ffb8a6);
+  color: var(--accent-strong);
   font: 700 17px/1 var(--mono);
 }
 
@@ -205,9 +241,9 @@ textarea {
   height: 28px;
   padding: 0 12px;
   border-radius: 999px;
-  border: 1px solid var(--border-strong);
-  background: var(--bg-elev);
-  color: var(--text-dim);
+  border: 1px solid var(--on-dark-line);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--on-dark);
   font-size: 12px;
   font-weight: 600;
   transition:
@@ -220,45 +256,51 @@ textarea {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--text-faint);
+  background: var(--on-dark-dim);
   transition: background-color 0.25s;
 }
 
+/* ready: soft pastel chip */
 .pill[data-status="ready"] {
-  color: var(--text);
+  color: #6b0f14;
+  border-color: #ffe9e2;
+  background: #ffd9cd;
 }
 .pill[data-status="ready"] .pill-dot {
-  background: var(--info);
+  background: #2a6cb3;
 }
 
+/* running: stronger salmon */
 .pill[data-status="running"] {
-  color: var(--accent);
-  border-color: rgba(243, 179, 76, 0.4);
-  background: var(--accent-soft);
+  color: var(--accent-ink);
+  border-color: #ffd3c7;
+  background: var(--action);
 }
 .pill[data-status="running"] .pill-dot {
-  background: var(--accent);
+  background: var(--accent-strong);
 }
 .pill.is-auto .pill-dot {
   animation: pulse 1.1s ease-in-out infinite;
 }
 
+/* complete: mint chip, the one cool tone */
 .pill[data-status="complete"] {
-  color: var(--ok);
-  border-color: rgba(90, 209, 168, 0.4);
-  background: var(--ok-soft);
+  color: #0d5a3f;
+  border-color: #e3f8ee;
+  background: #cdf2e0;
 }
 .pill[data-status="complete"] .pill-dot {
   background: var(--ok);
 }
 
+/* error: inverts the scheme so it cannot blend into the red page */
 .pill[data-status="error"] {
-  color: var(--err);
-  border-color: rgba(255, 107, 107, 0.45);
-  background: var(--err-soft);
+  color: #ffd9d2;
+  border-color: #ff8d86;
+  background: var(--wine-deep);
 }
 .pill[data-status="error"] .pill-dot {
-  background: var(--err);
+  background: #ff7b73;
 }
 
 /* ----------------------------------------------------------------- panels */
@@ -268,15 +310,22 @@ textarea {
   flex-direction: column;
   min-width: 0;
   min-height: 0;
+  color: var(--text);
   background: var(--bg-elev);
-  border: 1px solid var(--border);
+  border: 1px solid #ffd3c7;
   border-radius: var(--radius);
+  box-shadow: var(--lift);
   overflow: hidden;
-  transition: border-color 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 
 .panel:focus-within {
-  border-color: var(--border-strong);
+  border-color: #fff4f0;
+  box-shadow:
+    var(--lift),
+    0 0 0 3px rgba(255, 214, 203, 0.35);
 }
 
 .panel-head {
@@ -287,6 +336,7 @@ textarea {
   min-height: 44px;
   padding: 8px 14px;
   border-bottom: 1px solid var(--border);
+  background: var(--salmon);
 }
 
 .panel-head-left,
@@ -314,13 +364,15 @@ textarea {
 
 .panel-foot {
   padding: 9px 14px;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--border-strong);
+  background: var(--salmon-deep);
   font-size: 12px;
-  color: var(--text-faint);
+  color: var(--text-dim);
   transition: color 0.2s;
 }
 .panel-foot.is-dirty {
-  color: var(--accent);
+  color: var(--accent-strong);
+  font-weight: 600;
 }
 
 .file-chip,
@@ -330,20 +382,21 @@ textarea {
   font: 500 11px/1.6 var(--mono);
 }
 .file-chip {
-  background: var(--bg-inset);
-  border: 1px solid var(--border);
-  color: var(--text-dim);
+  background: var(--crimson);
+  border: 1px solid var(--wine);
+  color: var(--on-dark);
 }
 .dirty-chip {
   background: var(--accent-soft);
-  color: var(--accent);
+  border: 1px solid rgba(193, 39, 45, 0.35);
+  color: var(--accent-strong);
   animation: fade-up 0.25s var(--ease) both;
 }
 
 .hint {
   display: none;
   font: 500 11px var(--mono);
-  color: var(--text-faint);
+  color: var(--text-dim);
 }
 @media (min-width: 1100px) {
   .hint {
@@ -389,11 +442,12 @@ textarea {
   overflow-wrap: anywhere;
 }
 
+/* syntax colours, tuned to stay readable on pastel */
 .tok-kw {
   color: var(--info);
 }
 .tok-lambda {
-  color: var(--accent);
+  color: #b8261f;
 }
 .tok-num {
   color: var(--ok);
@@ -437,21 +491,37 @@ textarea {
   padding: 3px 10px;
   border-radius: 6px;
   background: var(--ok-soft);
-  border: 1px solid rgba(90, 209, 168, 0.35);
+  border: 1px solid rgba(19, 107, 77, 0.45);
   color: var(--ok);
   font: 600 15px var(--mono);
 }
 
 .error-block {
   padding: 12px 14px;
-  border-left: 3px solid var(--err);
+  border: 1px solid rgba(143, 15, 21, 0.45);
+  border-left: 5px solid var(--err);
   border-radius: 6px;
   background: var(--err-soft);
   animation: fade-up 0.25s var(--ease) both;
 }
 .error-title {
-  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
   color: var(--err);
+}
+.error-title::before {
+  content: "!";
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--err);
+  color: var(--err-soft);
+  font: 700 12px/1 var(--sans);
 }
 .error-message {
   margin: 8px 0;
@@ -471,9 +541,11 @@ textarea {
   display: grid;
   gap: 14px;
   padding: 14px 18px 18px;
+  color: var(--text);
   background: var(--bg-elev);
-  border: 1px solid var(--border);
+  border: 1px solid #ffd3c7;
   border-radius: var(--radius);
+  box-shadow: var(--lift);
 }
 
 .lane-head {
@@ -486,7 +558,7 @@ textarea {
 
 .lane-meta {
   font: 500 11.5px var(--mono);
-  color: var(--text-faint);
+  color: var(--text-dim);
 }
 
 .lane-empty {
@@ -516,7 +588,7 @@ textarea {
   padding: 0 14px;
   border: 1.5px solid var(--border-strong);
   border-radius: 10px;
-  background: var(--bg-inset);
+  background: var(--cream);
   color: var(--text);
   font: 600 calc(var(--box) * 0.36) / 1 var(--mono);
   transition:
@@ -533,25 +605,26 @@ textarea {
   top: 5px;
   left: 8px;
   font: 500 10px/1 var(--mono);
-  color: var(--text-faint);
+  color: var(--text-dim);
 }
 
 /* input states */
 .box-input.is-pending {
-  color: var(--text-dim);
+  border-color: #c9524b;
+  color: #b3282b;
 }
 
 .box-input.is-active {
   border-color: var(--accent);
-  background: var(--accent-soft);
-  color: var(--accent);
+  background: #fbb9a7;
+  color: var(--accent-strong);
   transform: translateY(-3px);
   box-shadow:
-    0 0 0 3px rgba(243, 179, 76, 0.12),
-    0 10px 26px -10px rgba(243, 179, 76, 0.45);
+    0 0 0 3px rgba(193, 39, 45, 0.2),
+    0 12px 24px -10px rgba(110, 10, 15, 0.6);
 }
 .box-input.is-active .box-index {
-  color: var(--accent);
+  color: var(--accent-strong);
 }
 .box-input.is-active::after {
   content: "";
@@ -566,8 +639,8 @@ textarea {
 }
 
 .box-input.is-done {
-  color: #6b778b;
-  border-color: var(--border);
+  color: #a0746e;
+  border-color: #e8bdb3;
 }
 .box-input.is-done::before {
   content: "✓";
@@ -581,26 +654,27 @@ textarea {
 /* output states */
 .box-output.is-empty {
   border-style: dashed;
-  color: var(--text-faint);
+  border-color: #d9857c;
+  color: #b84a45;
 }
 
 .box-output.is-target {
-  border-color: rgba(243, 179, 76, 0.65);
+  border-color: var(--accent);
   color: var(--accent);
   animation: target-pulse 1.4s ease-in-out infinite;
 }
 
 .box-output.is-filled {
-  border-color: rgba(90, 209, 168, 0.4);
-  background: var(--ok-soft);
+  border-color: rgba(19, 107, 77, 0.5);
+  background: #e3f3e9;
   color: var(--ok);
   animation: pop 0.42s var(--ease) both;
 }
 .box-output.is-fresh {
   border-color: var(--ok);
   box-shadow:
-    0 0 0 3px rgba(90, 209, 168, 0.12),
-    0 10px 26px -10px rgba(90, 209, 168, 0.4);
+    0 0 0 3px rgba(19, 107, 77, 0.16),
+    0 12px 24px -10px rgba(19, 107, 77, 0.5);
 }
 
 /* --------------------------------------------------------------- controls */
@@ -611,8 +685,9 @@ textarea {
   flex-wrap: wrap;
   gap: 14px 28px;
   padding: 12px 24px 16px;
-  border-top: 1px solid var(--border);
-  background: rgba(16, 20, 28, 0.6);
+  border-top: 1px solid var(--on-dark-line);
+  background: var(--wine);
+  color: var(--on-dark);
 }
 
 .btn-group {
@@ -621,6 +696,7 @@ textarea {
   gap: 8px;
 }
 
+/* Buttons default to the deep-red control bar; .panel overrides follow. */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -628,10 +704,10 @@ textarea {
   gap: 8px;
   height: 38px;
   padding: 0 14px;
-  border: 1px solid var(--border-strong);
+  border: 1px solid rgba(255, 196, 180, 0.35);
   border-radius: 8px;
-  background: #151b26;
-  color: var(--text);
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--on-dark);
   font-size: 13px;
   font-weight: 500;
   white-space: nowrap;
@@ -644,18 +720,18 @@ textarea {
     opacity 0.15s;
 }
 .btn:hover:not(:disabled) {
-  border-color: #3b475c;
-  background: #1a2231;
+  border-color: rgba(255, 210, 196, 0.65);
+  background: rgba(255, 255, 255, 0.14);
 }
 .btn:active:not(:disabled) {
   transform: translateY(1px);
 }
 .btn:focus-visible {
-  outline: 2px solid var(--info);
+  outline: 2px solid #ffe3da;
   outline-offset: 2px;
 }
 .btn:disabled {
-  opacity: 0.38;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
@@ -666,31 +742,70 @@ textarea {
 }
 
 .btn-primary {
-  border-color: var(--accent);
-  background: var(--accent);
+  border-color: var(--action);
+  background: var(--action);
   color: var(--accent-ink);
   font-weight: 650;
 }
 .btn-primary:hover:not(:disabled) {
-  border-color: #f7c46a;
-  background: #f7c46a;
+  border-color: var(--action-hover);
+  background: var(--action-hover);
 }
 
 .btn-outline {
-  border-color: rgba(243, 179, 76, 0.5);
+  border-color: rgba(255, 184, 166, 0.6);
   background: transparent;
-  color: var(--accent);
+  color: var(--action);
 }
 .btn-outline:hover:not(:disabled) {
-  border-color: var(--accent);
-  background: var(--accent-soft);
+  border-color: var(--action);
+  background: rgba(255, 184, 166, 0.16);
 }
 .btn-outline.is-on {
-  background: var(--accent-soft);
-  border-color: var(--accent);
+  background: rgba(255, 184, 166, 0.22);
+  border-color: var(--action);
 }
 
 .btn-ghost {
+  background: transparent;
+  color: var(--on-dark-dim);
+}
+
+/* Buttons that sit on pastel panels (e.g. Parse / Run in the editor head). */
+.panel .btn {
+  border-color: var(--border-strong);
+  background: rgba(255, 244, 240, 0.55);
+  color: var(--accent-strong);
+}
+.panel .btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: #fff4f0;
+}
+.panel .btn:focus-visible {
+  outline-color: var(--accent);
+}
+.panel .btn-primary {
+  border-color: var(--accent-strong);
+  background: var(--accent-strong);
+  color: #fff0ea;
+}
+.panel .btn-primary:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+.panel .btn-outline {
+  border-color: var(--accent);
+  background: rgba(255, 244, 240, 0.8);
+  color: var(--accent-strong);
+}
+.panel .btn-outline:hover:not(:disabled) {
+  background: #fff;
+}
+.panel .btn-outline.is-on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.panel .btn-ghost {
   background: transparent;
   color: var(--text-dim);
 }
@@ -711,11 +826,11 @@ textarea {
 
 .step-count {
   font: 500 13px var(--mono);
-  color: var(--text-dim);
+  color: var(--on-dark-dim);
   white-space: nowrap;
 }
 .step-count strong {
-  color: var(--text);
+  color: var(--on-dark);
   font-weight: 700;
 }
 
@@ -723,26 +838,31 @@ textarea {
   flex: 1;
   height: 6px;
   border-radius: 999px;
-  background: var(--border);
+  background: rgba(255, 196, 180, 0.22);
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--info), var(--ok));
+  background: linear-gradient(90deg, var(--action), #ffe9e1);
   transition: width 0.5s var(--ease);
 }
 
+/* error: striped so it reads without relying on colour alone */
 .progress[data-status="error"] .progress-fill {
-  background: var(--err);
+  background: repeating-linear-gradient(
+    45deg,
+    #ffb8a6 0 6px,
+    var(--wine-deep) 6px 12px
+  );
 }
 
 .progress-pct {
   min-width: 3.5ch;
   text-align: right;
   font: 500 12px var(--mono);
-  color: var(--text-dim);
+  color: var(--on-dark-dim);
 }
 
 /* -------------------------------------------------------------- animation */
@@ -790,10 +910,10 @@ textarea {
 @keyframes target-pulse {
   0%,
   100% {
-    background-color: transparent;
+    background-color: var(--cream);
   }
   50% {
-    background-color: var(--accent-soft);
+    background-color: var(--cream-hot);
   }
 }
 
